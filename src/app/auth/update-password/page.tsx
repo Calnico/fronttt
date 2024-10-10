@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { config } from '@/config';
 import { GuestGuard } from '@/components/auth/guest-guard';
 import { Layout } from '@/components/auth/layout';
-import { SignUpForm } from '@/components/auth/sign-up-form';
+import { UpdatePasswordForm } from '@/components/auth/update-password-form';
 
 export const metadata: Metadata = { title: config.site.name }; 
 
@@ -12,7 +12,7 @@ export default function Page(): React.JSX.Element {
   return (
     <Layout>
       <GuestGuard>
-        <SignUpForm />
+        <UpdatePasswordForm />
       </GuestGuard>
     </Layout>
   );

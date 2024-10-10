@@ -10,7 +10,7 @@ import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/Arrow
 import { config } from '@/config';
 import { paths } from '@/paths';
 
-export const metadata = { title: `Not found | ${config.site.name}` } satisfies Metadata;
+export const metadata: Metadata = { title: config.site.name }; 
 
 export default function NotFound(): React.JSX.Element {
   return (
@@ -25,10 +25,10 @@ export default function NotFound(): React.JSX.Element {
           />
         </Box>
         <Typography variant="h3" sx={{ textAlign: 'center' }}>
-          404: The page you are looking for isn&apos;t here
+          404: La página que estás buscando no está aquí
         </Typography>
         <Typography color="text.secondary" variant="body1" sx={{ textAlign: 'center' }}>
-          You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation
+          O bien has probado alguna ruta sospechosa o has llegado aquí por error. Sea lo que sea, prueba a utilizar la navegación
         </Typography>
         <Button
           component={RouterLink}
@@ -36,7 +36,7 @@ export default function NotFound(): React.JSX.Element {
           startIcon={<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />}
           variant="contained"
         >
-          Go back to home
+          Volver al inicio
         </Button>
       </Stack>
     </Box>

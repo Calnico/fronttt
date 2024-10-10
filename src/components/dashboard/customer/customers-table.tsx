@@ -73,11 +73,11 @@ export function CustomersTable({
                   }}
                 />
               </TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Signed Up</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Correo electrónico</TableCell>
+              <TableCell>Rol</TableCell>
+              <TableCell>Número de celular</TableCell>
+              <TableCell>Registro</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -107,7 +107,7 @@ export function CustomersTable({
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.role}</TableCell>
                   <TableCell>{row.phone}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{dayjs(row.createdAt).format('D MMM, YYYY')}</TableCell>
                 </TableRow>
               );
             })}

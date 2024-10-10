@@ -23,13 +23,11 @@ import { authClient } from '@/lib/auth/client';
 import { useUser } from '@/hooks/use-user';
 
 const schema = zod.object({
-  email: zod.string().min(1, { message: 'Email is required' }).email(),
-  password: zod.string().min(1, { message: 'Password is required' }),
+  email: zod.string().min(1, { message: 'El correo electrónico es requerido' }).email(),
+  password: zod.string().min(1, { message: 'La contraseña es requerida' }),
 });
 
 type Values = zod.infer<typeof schema>;
-
-const defaultValues = { email: 'sofia@devias.io', password: 'Secret1' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -44,26 +42,34 @@ export function SignInForm(): React.JSX.Element {
     control,
     handleSubmit,
     setError,
-    formState: { errors },
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+    formState: { errors, isValid },
+  } = useForm<Values>({resolver: zodResolver(schema),
+    mode: 'onChange', 
+  });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-
+  
       const { error } = await authClient.signInWithPassword(values);
-
+  
       if (error) {
         setError('root', { type: 'server', message: error });
         setIsPending(false);
         return;
       }
-
+  
+      // Aquí, el token debería estar guardado en localStorage
+      const { data } = await authClient.getUser(); // Obtén los datos del usuario aquí
+  
+      // Verifica si el usuario tiene un supermercado
+      if (data?.ownedSupermarket === null) {
+        router.push('/auth/supermarket-sign-up');
+        return;
+      }
+  
       // Refresh the auth state
       await checkSession?.();
-
-      // UserProvider, for this case, will not refresh the router
-      // After refresh, GuestGuard will handle the redirect
       router.refresh();
     },
     [checkSession, router, setError]
@@ -73,6 +79,12 @@ export function SignInForm(): React.JSX.Element {
     <Stack spacing={4}>
       <Stack spacing={1}>
         <Typography variant="h4">Inicio de Sesión</Typography>
+        <Typography color="text.secondary" variant="body2">
+          ¿Aún no tienes una cuenta?{' '}
+          <Link component={RouterLink} href={paths.auth.signUp} underline="hover" variant="subtitle2">
+            Regístrate
+          </Link>
+        </Typography>
       </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
@@ -81,8 +93,8 @@ export function SignInForm(): React.JSX.Element {
             name="email"
             render={({ field }) => (
               <FormControl error={Boolean(errors.email)}>
-                <InputLabel>Nombre de usuario</InputLabel>
-                <OutlinedInput {...field} label="Email address" type="email" />
+                <InputLabel>Correo electrónico</InputLabel>
+                <OutlinedInput {...field} label="Correo Electronico" type="email" />
                 {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
               </FormControl>
             )}
@@ -114,7 +126,7 @@ export function SignInForm(): React.JSX.Element {
                       />
                     )
                   }
-                  label="Password"
+                  label="Contraseña"
                   type={showPassword ? 'text' : 'password'}
                 />
                 {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
@@ -127,7 +139,7 @@ export function SignInForm(): React.JSX.Element {
             </Link>
           </div>
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-          <Button disabled={isPending} type="submit" variant="contained">
+          <Button disabled={!isValid || isPending} type="submit" variant="contained">
             Iniciar sesión
           </Button>
         </Stack>
