@@ -4,12 +4,9 @@ import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-// import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
-
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -18,9 +15,13 @@ import { Logo } from '@/components/core/logo';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
+import { filterNavItemsByRole } from '@/lib/filter-nav-items-by-role';
+import { useUser } from '@/hooks/use-user';
 
 export function SideNav(): React.JSX.Element {
+  const { user } = useUser();
   const pathname = usePathname();
+  const filteredNavItems = filterNavItemsByRole(navItems, user?.role || 'viewer');
 
   return (
     <Box
@@ -43,11 +44,9 @@ export function SideNav(): React.JSX.Element {
         left: 0,
         maxWidth: '100%',
         position: 'fixed',
-        scrollbarWidth: 'none',
         top: 0,
         width: 'var(--SideNav-width)',
         zIndex: 'var(--SideNav-zIndex)',
-        '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -56,8 +55,17 @@ export function SideNav(): React.JSX.Element {
         </Box>
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
+      <Box
+        component="nav"
+        sx={{
+          flex: '1 1 auto',
+          p: '12px',
+          overflowY: 'auto',
+          scrollbarWidth: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        }}
+      >
+        {renderNavItems({ pathname, items: filteredNavItems })}
       </Box>
     </Box>
   );

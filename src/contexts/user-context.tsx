@@ -27,6 +27,13 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
   });
 
   const checkSession = React.useCallback(async (): Promise<void> => {
+    const token = localStorage.getItem('custom-auth-token');
+    const userId = localStorage.getItem('userId');
+
+    if (!token || !userId) {
+      setState({ user: null, error: null, isLoading: false });
+      return; // Si no hay token o userId, salimos
+    }
     try {
       const { data, error } = await authClient.getUser();
 

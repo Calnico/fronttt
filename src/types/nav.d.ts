@@ -1,3 +1,5 @@
+export type UserRole = 'admin' | 'owner' | 'cashier' | 'viewer';
+
 export interface NavItemConfig {
   key: string;
   title?: string;
@@ -6,6 +8,7 @@ export interface NavItemConfig {
   label?: string;
   icon?: string;
   href?: string;
+  roles?: UserRole[];
   items?: NavItemConfig[];
   // Matcher cannot be a function in order
   // to be able to use it on the server.
